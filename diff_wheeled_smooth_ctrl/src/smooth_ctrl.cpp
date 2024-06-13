@@ -6,12 +6,12 @@
 SmoothCtrl::SmoothCtrl(const std::string& name)
 : Node(name)
 {
-  this->k1_ = this->declare_parameter<float>("k1_", 1);
-  this->k2_ = this->declare_parameter<float>("k2_", 3);
-  this->beta_ = this->declare_parameter<float>("beta_", 0.4);
-  this->v_max_ = this->declare_parameter<float>("v_max_", 0.5);
-  this->active_ = this->declare_parameter<bool>("active_", false);
-  this->home_pose_ = geometry_msgs::msg::Pose2D();
+  k1_ = this->declare_parameter<float>("k1_", 1);
+  k2_ = this->declare_parameter<float>("k2_", 3);
+  beta_ = this->declare_parameter<float>("beta_", 0.4);
+  v_max_ = this->declare_parameter<float>("v_max_", 0.5);
+  active_ = this->declare_parameter<bool>("active_", false);
+  home_pose_ = geometry_msgs::msg::Pose2D();
 
   cmd_vel_publisher = this->create_publisher<geometry_msgs::msg::Twist>("cmd_vel_mux/input/teleop", 1);
   pose_subscriber_ = this->create_subscription<geometry_msgs::msg::PoseWithCovarianceStamped>(
@@ -41,7 +41,7 @@ SmoothCtrl::pose_relative(geometry_msgs::msg::Pose2D &home_pose, geometry_msgs::
  
   pose_relative.x = ca*px + sa *py;
   pose_relative.y = -sa*px + ca*py;
-  pose_relative.theta = this->mod_angle(pa);
+  pose_relative.theta = mod_angle(pa);
 
   return pose_relative;
 }
@@ -49,10 +49,10 @@ SmoothCtrl::pose_relative(geometry_msgs::msg::Pose2D &home_pose, geometry_msgs::
 void 
 SmoothCtrl::pose_subscriber_callback(const geometry_msgs::msg::PoseWithCovarianceStamped & msg)
 {
-  this->current_pose_ = geometry_msgs::msg::Pose2D();
+  current_pose_ = geometry_msgs::msg::Pose2D();
   current_pose_.x = msg.pose.pose.position.x;
   current_pose_.y = msg.pose.pose.position.y;
-  current_pose_.theta = this->mod_angle(tf2::getYaw(msg.pose.pose.orientation));
+  current_pose_.theta = mod_angle(tf2::getYaw(msg.pose.pose.orientation));
 }
 
 void 
@@ -60,7 +60,7 @@ SmoothCtrl::goal_subscriber_callback(const geometry_msgs::msg::PoseStamped & msg
 {
   home_pose_.x = msg.pose.position.x;
   home_pose_.y = msg.pose.position.y;
-  home_pose_.theta = this->mod_angle(tf2::getYaw(msg.pose.orientation));
+  home_pose_.theta = mod_angle(tf2::getYaw(msg.pose.orientation));
   active_ = true;
   RCLCPP_INFO(this->get_logger(), "home_pose.x = %f, home_pose.y = %f, home_pose.yaw = %f", home_pose_.x, home_pose_.y, home_pose_.theta);
 }
@@ -73,7 +73,7 @@ SmoothCtrl::cmd_vel_publisher_timer_callback()
   
   geometry_msgs::msg::Twist cmd_vel = geometry_msgs::msg::Twist();
   
-  geometry_msgs::msg::Pose2D pose_relative = this->pose_relative(home_pose_, current_pose_);
+  geometry_msgs::msg::Pose2D pose_relative = pose_relative(home_pose_, current_pose_);
 
   float dr = std::hypot(pose_relative.x, pose_relative.y);
 
