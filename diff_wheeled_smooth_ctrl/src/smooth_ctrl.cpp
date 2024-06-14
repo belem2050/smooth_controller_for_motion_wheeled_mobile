@@ -16,6 +16,11 @@ SmoothCtrl::SmoothCtrl(const std::string& name)
   this->declare_parameter<float>("ome_pose.theta", 0.0);
   this->declare_parameter<bool>("active", false);
 
+  this->declare_parameter<std::string>("pose_sub_topic", "amcl_pose");
+  this->declare_parameter<std::string>("goal_sub_topic", "move_base_simple/goal");
+  this->declare_parameter<std::string>("cmd_vel_pub_topic", "cmd_vel_mux/input/teleop");
+
+
   k1_ = this->get_parameter("k1").as_double();
   k2_ = this->get_parameter("k2").as_double();
   beta_ = this->get_parameter("beta").as_double();
@@ -26,14 +31,18 @@ SmoothCtrl::SmoothCtrl(const std::string& name)
   home_pose_.theta = this->get_parameter("ome_pose.theta").as_double();
   active_ = this->get_parameter("active").as_bool();
 
-  cmd_vel_publisher = this->create_publisher<geometry_msgs::msg::Twist>("cmd_vel_mux/input/teleop", 1);
+  std::string pose_sub_topic = this->get_parameter("pose_sub_topic").as_string();
+  std::string goal_sub_topic = this->get_parameter("goal_sub_topic").as_string();
+  std::string cmd_vel_pub_topic = this->get_parameter("cmd_vel_pub_topic").as_string();
+
+  cmd_vel_publisher = this->create_publisher<geometry_msgs::msg::Twist>(cmd_vel_pub_topic, 1);
   pose_subscriber_ = this->create_subscription<geometry_msgs::msg::PoseWithCovarianceStamped>(
-    "amcl_pose",
+    pose_sub_topic,
     rclcpp::QoS(1).best_effort(),
     std::bind(&SmoothCtrl::pose_subscriber_callback, this, std::placeholders::_1)
   );
   goal_subscriber_ = this->create_subscription<geometry_msgs::msg::PoseStamped>(
-    "move_base_simple/goal",
+    goal_sub_topic,
     rclcpp::QoS(1).best_effort(),
     std::bind(&SmoothCtrl::goal_subscriber_callback, this, std::placeholders::_1)
   );

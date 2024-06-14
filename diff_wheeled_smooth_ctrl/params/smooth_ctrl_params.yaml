@@ -10,4 +10,6 @@ smooth_ctrl:
       y: 0.0
       theta: 0.0
     active: false
-  
+    pose_sub_topic: amcl_pose
+    goal_sub_topic: move_base_simple/goal
+    cmd_vel_pub_topic: cmd_vel_mux/input/teleop
