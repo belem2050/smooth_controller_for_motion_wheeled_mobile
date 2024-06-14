@@ -12,10 +12,12 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
-    - uses: jspricke/ros-deb-builder-action@main
+    - name: Checkout code
+      uses: actions/checkout@v2
+      
+    - name: Build ROS package
+      uses: jspricke/ros-deb-builder-action@main
       with:
         ROS_DISTRO: humble
         DEB_DISTRO: jammy
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          
-   
