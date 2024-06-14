@@ -1,0 +1,21 @@
+name: C/C++ CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-22.04
+
+    steps:
+    - uses: jspricke/ros-deb-builder-action@main
+      with:
+        ROS_DISTRO: humble
+        DEB_DISTRO: jammy
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+   
