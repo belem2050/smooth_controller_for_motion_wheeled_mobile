@@ -6,12 +6,25 @@
 SmoothCtrl::SmoothCtrl(const std::string& name)
 : Node(name)
 {
-  k1_ = this->declare_parameter<float>("k1_", 1);
-  k2_ = this->declare_parameter<float>("k2_", 3);
-  beta_ = this->declare_parameter<float>("beta_", 0.4);
-  v_max_ = this->declare_parameter<float>("v_max_", 0.5);
-  active_ = this->declare_parameter<bool>("active_", false);
-  home_pose_ = geometry_msgs::msg::Pose2D();
+  this->declare_parameter<float>("k1", 1);
+  this->declare_parameter<float>("k2", 3);
+  this->declare_parameter<float>("beta", 0.4);
+  this->declare_parameter<float>("lambda", 2);
+  this->declare_parameter<float>("v_max", 0.5);
+  this->declare_parameter<float>("ome_pose.x", 0.0);
+  this->declare_parameter<float>("ome_pose.y", 0.0);
+  this->declare_parameter<float>("ome_pose.theta", 0.0);
+  this->declare_parameter<bool>("active", false);
+
+  k1_ = this->get_parameter("k1").as_double();
+  k2_ = this->get_parameter("k2").as_double();
+  beta_ = this->get_parameter("beta").as_double();
+  lambda_ = this->get_parameter("lambda").as_double();
+  v_max_ = this->get_parameter("v_max").as_double();
+  home_pose_.x = this->get_parameter("ome_pose.x").as_double();
+  home_pose_.y = this->get_parameter("ome_pose.y").as_double();
+  home_pose_.theta = this->get_parameter("ome_pose.theta").as_double();
+  active_ = this->get_parameter("active").as_bool();
 
   cmd_vel_publisher = this->create_publisher<geometry_msgs::msg::Twist>("cmd_vel_mux/input/teleop", 1);
   pose_subscriber_ = this->create_subscription<geometry_msgs::msg::PoseWithCovarianceStamped>(

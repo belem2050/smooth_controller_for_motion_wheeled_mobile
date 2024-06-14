@@ -1,0 +1,13 @@
+smooth_ctrl: 
+  ros__parameters:
+    k1: 1
+    k2: 3
+    beta: 0.4
+    lambda: 
+    v_max: 0.5
+    home_pose:
+      x: 0.0
+      y: 0.0
+      theta: 0.0
+    active: false
+  

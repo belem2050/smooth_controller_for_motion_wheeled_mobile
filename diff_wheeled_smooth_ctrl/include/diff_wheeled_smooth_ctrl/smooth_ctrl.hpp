@@ -18,8 +18,8 @@ class  SmoothCtrl: public rclcpp::Node
     float lambda_;
     float v_max_;
     bool active_ = false;
-    geometry_msgs::msg::Pose2D home_pose_;
     geometry_msgs::msg::Pose2D current_pose_;
+    geometry_msgs::msg::Pose2D home_pose_ = geometry_msgs::msg::Pose2D();
 
     rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr cmd_vel_publisher;
     rclcpp::Subscription<geometry_msgs::msg::PoseWithCovarianceStamped>::SharedPtr pose_subscriber_;
