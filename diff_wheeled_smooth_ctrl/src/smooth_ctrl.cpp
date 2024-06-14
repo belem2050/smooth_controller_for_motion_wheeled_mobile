@@ -29,9 +29,9 @@ SmoothCtrl::SmoothCtrl(const std::string& name)
 }
 
 geometry_msgs::msg::Pose2D 
-SmoothCtrl::pose_relative(geometry_msgs::msg::Pose2D &home_pose, geometry_msgs::msg::Pose2D &pose)
+SmoothCtrl::pose_relative(geometry_msgs::msg::Pose2D & home_pose, geometry_msgs::msg::Pose2D & pose)
 {
-  geometry_msgs::msg::Pose2D pose_relative;
+  geometry_msgs::msg::Pose2D relative_pose;
 
   float ca = cos(pose.theta);
   float sa = sin(pose.theta);
@@ -39,11 +39,11 @@ SmoothCtrl::pose_relative(geometry_msgs::msg::Pose2D &home_pose, geometry_msgs::
   float py = home_pose.y - pose.y;
   float pa = home_pose.theta - pose.theta;
  
-  pose_relative.x = ca*px + sa *py;
-  pose_relative.y = -sa*px + ca*py;
-  pose_relative.theta = mod_angle(pa);
+  relative_pose.x = ca*px + sa *py;
+  relative_pose.y = -sa*px + ca*py;
+  relative_pose.theta = mod_angle(pa);
 
-  return pose_relative;
+  return relative_pose;
 }
 
 void 
@@ -73,12 +73,12 @@ SmoothCtrl::cmd_vel_publisher_timer_callback()
   
   geometry_msgs::msg::Twist cmd_vel = geometry_msgs::msg::Twist();
   
-  geometry_msgs::msg::Pose2D pose_relative = pose_relative(home_pose_, current_pose_);
+  geometry_msgs::msg::Pose2D relative_pose = pose_relative(home_pose_, current_pose_);
 
-  float dr = std::hypot(pose_relative.x, pose_relative.y);
+  float dr = std::hypot(relative_pose.x, relative_pose.y);
 
-  float sigma = mod_angle(std::atan2(pose_relative.y, pose_relative.x));
-  float theta = mod_angle(sigma - pose_relative.theta);
+  float sigma = mod_angle(std::atan2(relative_pose.y, relative_pose.x));
+  float theta = mod_angle(sigma - relative_pose.theta);
 
   float part1 = k2_ * (-sigma - std::atan(k1_*theta));
   float part2 = (1 + k1_ / (1 + std::pow((k1_ * theta), 2)) * sin(-sigma));
@@ -93,7 +93,7 @@ SmoothCtrl::cmd_vel_publisher_timer_callback()
     v = v_max_ / (1 + beta_ * std::pow(std::abs(k), lambda_));
   }
 
-  if (pose_relative.theta != 0.0) // keep 0 as angular vel if no distance to travel
+  if (relative_pose.theta != 0.0) // keep 0 as angular vel if no distance to travel
   {
     w = k *v;
   }
