@@ -11,9 +11,9 @@ SmoothCtrl::SmoothCtrl(const std::string& name)
   this->declare_parameter<float>("beta", 0.4);
   this->declare_parameter<float>("lambda", 2);
   this->declare_parameter<float>("v_max", 0.5);
-  this->declare_parameter<float>("ome_pose.x", 0.0);
-  this->declare_parameter<float>("ome_pose.y", 0.0);
-  this->declare_parameter<float>("ome_pose.theta", 0.0);
+  this->declare_parameter<float>("home_pose.x", 0.0);
+  this->declare_parameter<float>("home_pose.y", 0.0);
+  this->declare_parameter<float>("home_pose.theta", 0.0);
   this->declare_parameter<bool>("active", false);
 
   this->declare_parameter<std::string>("pose_sub_topic", "amcl_pose");
@@ -26,9 +26,9 @@ SmoothCtrl::SmoothCtrl(const std::string& name)
   beta_ = this->get_parameter("beta").as_double();
   lambda_ = this->get_parameter("lambda").as_double();
   v_max_ = this->get_parameter("v_max").as_double();
-  home_pose_.x = this->get_parameter("ome_pose.x").as_double();
-  home_pose_.y = this->get_parameter("ome_pose.y").as_double();
-  home_pose_.theta = this->get_parameter("ome_pose.theta").as_double();
+  home_pose_.x = this->get_parameter("home_pose.x").as_double();
+  home_pose_.y = this->get_parameter("home_pose.y").as_double();
+  home_pose_.theta = this->get_parameter("home_pose.theta").as_double();
   active_ = this->get_parameter("active").as_bool();
 
   std::string pose_sub_topic = this->get_parameter("pose_sub_topic").as_string();
