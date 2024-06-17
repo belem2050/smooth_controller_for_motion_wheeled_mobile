@@ -12,6 +12,7 @@ find_package(rclcpp REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(tf2_geometry_msgs REQUIRED)
 find_package(tf2 REQUIRED)
+find_package(std_srvs REQUIRED)
 
 include_directories(include/diff_wheeled_smooth_ctrl)
 
@@ -28,6 +29,7 @@ set(dependencies
   "geometry_msgs"
   "tf2_geometry_msgs"
   "tf2"
+  "std_srvs"
 )
 
 ament_target_dependencies(

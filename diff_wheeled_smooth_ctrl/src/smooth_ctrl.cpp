@@ -35,6 +35,7 @@ SmoothCtrl::SmoothCtrl(const std::string& name)
   std::string goal_sub_topic = this->get_parameter("goal_sub_topic").as_string();
   std::string cmd_vel_pub_topic = this->get_parameter("cmd_vel_pub_topic").as_string();
 
+  activation_service_ = this->create_service<std_srvs::srv::SetBool>("activate", std::bind(&SmoothCtrl::activation_service_callback, this,  std::placeholders::_1, std::placeholders::_2));
   cmd_vel_publisher = this->create_publisher<geometry_msgs::msg::Twist>(cmd_vel_pub_topic, 1);
   pose_subscriber_ = this->create_subscription<geometry_msgs::msg::PoseWithCovarianceStamped>(
     pose_sub_topic,
@@ -66,6 +67,14 @@ SmoothCtrl::pose_relative(geometry_msgs::msg::Pose2D & home_pose, geometry_msgs:
   relative_pose.theta = mod_angle(pa);
 
   return relative_pose;
+}
+
+void
+SmoothCtrl::activation_service_callback(std_srvs::srv::SetBool::Request::SharedPtr request, std_srvs::srv::SetBool::Response::SharedPtr response)
+{
+  active_ = request->data;
+  response->message = std::string("Smoothe Ctrl is : ") + std::string(active_ ? "true" : "false");
+  response->success = true;
 }
 
 void 
