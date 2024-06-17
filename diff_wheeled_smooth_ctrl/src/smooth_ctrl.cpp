@@ -70,7 +70,7 @@ SmoothCtrl::pose_relative(geometry_msgs::msg::Pose2D & home_pose, geometry_msgs:
 }
 
 void
-SmoothCtrl::activation_service_callback(std_srvs::srv::SetBool::Request::SharedPtr request, std_srvs::srv::SetBool::Response::SharedPtr response)
+SmoothCtrl::activation_service_callback(const std_srvs::srv::SetBool::Request::SharedPtr request, std_srvs::srv::SetBool::Response::SharedPtr response)
 {
   active_ = request->data;
   response->message = std::string("Smoothe Ctrl is : ") + std::string(active_ ? "true" : "false");
