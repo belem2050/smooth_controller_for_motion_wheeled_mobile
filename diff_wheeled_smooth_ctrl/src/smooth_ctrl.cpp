@@ -73,7 +73,7 @@ void
 SmoothCtrl::activation_service_callback(const std_srvs::srv::SetBool::Request::SharedPtr request, std_srvs::srv::SetBool::Response::SharedPtr response)
 {
   active_ = request->data;
-  response->message = std::string("Smoothe Ctrl is : ") + std::string(active_ ? "true" : "false");
+  response->message = std::string("Smoother Ctrl is : ") + std::string(active_ ? "true" : "false");
   response->success = true;
 }
 
